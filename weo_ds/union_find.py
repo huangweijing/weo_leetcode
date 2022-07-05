@@ -3,7 +3,7 @@ class WeightedUnionFind:
 
     def __init__(self, size):
         self.node = [i for i in range(size)]
-        self.size = [0] * size
+        self.size = [1] * size
         self.count = size
         pass
 
