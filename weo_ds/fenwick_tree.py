@@ -24,7 +24,7 @@ print(bin(i), bin(i & -i), bin((i & -i) + i))
 #
 f = Fenwick(30)
 f.add(7, 20)
-f.add(3, 10)
+f.add(3, -10)
 print(f.data)
-print(f.sum(5))
+print(f.sum(8))
 #
