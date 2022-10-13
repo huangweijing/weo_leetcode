@@ -5,27 +5,34 @@ class ObjectHeap:
     def __init__(self, key=lambda x: x):
         self.data = []
         self.key_func = key
-        self.memory = dict[int, object]()
+        self.memory = dict[int, list[object]]()
+        self.size = 0
 
     def top(self):
         if len(self.data) == 0:
             return None
         key = self.data[0]
-        return self.memory[key]
+        return self.memory[key][-1]
 
     def pop(self) -> object:
-        key = heapq.heappop(self.data)
-        obj = self.memory[key]
-        del self.memory[key]
+        key = self.data[0]
+        obj = self.memory[key].pop()
+        if len(self.memory[key]) == 0:
+            del self.memory[key]
+            heapq.heappop(self.data)
+        self.size -= 1
         return obj
 
     def push(self, obj: object):
         key = self.key_func(obj)
-        self.memory[key] = obj
-        heapq.heappush(self.data, key)
+        if key not in self.memory:
+            self.memory[key] = []
+            heapq.heappush(self.data, key)
+        self.size += 1
+        self.memory[key].append(obj)
 
     def length(self) -> int:
-        return len(self.data)
+        return self.size
 
 class Student:
     def __init__(self, age, number):
