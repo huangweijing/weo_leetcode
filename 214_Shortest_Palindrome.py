@@ -2,18 +2,19 @@ from collections import deque
 
 class Solution:
     def shortestPalindrome(self, s: str) -> str:
-        idx = len(s) - 1
-        scanned_stack = list[str]()
-        mirror_queue = deque[str]()
-        while idx > 0:
-            ch = s[idx]
-            if ch == 
+        pow = 26
+        modolus = 10 ** 9 + 7
+        hash1, hash2, base = 0, 0, 1
+        max_equal_idx = 0
+        for i in range(len(s)):
+            ch_val = ord(s[i]) - ord("a") + 1
+            hash1 = ((hash1 * pow) % modolus + ch_val) % modolus
+            hash2 = (ch_val * base + hash2) % modolus
+            base = (base * pow) % modolus
+            if hash1 == hash2:
+                max_equal_idx = i
+        return s[max_equal_idx + 1:][::-1] + s
 
-            if len(mirror_queue) > 0:
-
-
-            if len(scanned_stack) > 0:
-                pass
-
-            idx -= 1
+r = Solution().shortestPalindrome("a")
+print(r)
 

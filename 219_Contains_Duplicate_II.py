@@ -1,17 +1,16 @@
 from typing import List
+from collections import Counter
 
 class Solution:
     def containsNearbyDuplicate(self, nums: List[int], k: int) -> bool:
-        num_dict = dict[int, int]()
+        cnt = Counter(nums[: k])
         for i, num in enumerate(nums):
-            if num not in num_dict:
-                num_dict[num] = list[int]()
-            num_dict[num].append(i)
-        for key in num_dict:
-            idx_list = num_dict[key]
-            if len(idx_list) > 1:
-                for i in range(1, len(idx_list)):
-                    if idx_list[i] - idx_list[i - 1] <= k:
-                        return True
+            if i + k < len(nums):
+                cnt[nums[i + k]] += 1
+            if i - k - 1 >= 0:
+                cnt[nums[i - k - 1]] -= 1
+            if cnt[num] > 1:
+                return True
         return False
+
 

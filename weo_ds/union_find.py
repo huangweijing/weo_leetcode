@@ -29,13 +29,16 @@ class WeightedUnionFind:
 # Test Code
 data = [[1, 9], [2, 3], [3, 7], [7, 4], [5, 7], [8, 6]]
 uf = WeightedUnionFind(10)
+print(uf.node)
 for pair in data:
     uf.union(*pair)
-
-uf.union(9, 0)
-
+print(uf.node)
 print(uf.count)
-print(uf.find(3) == uf.find(8))
-uf.union(3, 8)
-print(uf.find(3) == uf.find(8))
-print(uf.count)
+
+# uf.union(9, 0)
+#
+# print(uf.count)
+# print(uf.find(3) == uf.find(8))
+# uf.union(3, 8)
+# print(uf.find(3) == uf.find(8))
+# print(uf.count)
