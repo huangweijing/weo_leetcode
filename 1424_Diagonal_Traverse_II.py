@@ -1,34 +1,25 @@
 from typing import List
+from collections import deque, defaultdict
+
 
 class Solution:
     def findDiagonalOrder(self, nums: List[List[int]]) -> List[int]:
-        h = len(nums)
-        result = []
-        # last_len = -1
-        last_len_mapping = dict[int, int]()
-        for i in range(h):
-            last_len = len(nums[i]) - ((h - 1) - i)
-            last_len_mapping[i] = last_len
+        ans = []
+        diagonal_dict = defaultdict(lambda : deque())
+        for i, row in enumerate(nums):
+            for j, val in enumerate(row):
+                x = i + j
+                diagonal_dict[x].appendleft(val)
 
-        for i in range(h):
-            row, col = i, 0
-            while row >= 0:
-                if col < len(nums[row]):
-                    result.append(nums[row][col])
-                col += 1
-                row -= 1
-            last_len = max(len(nums[i]) - ((h - 1) - i), last_len)
-            # print(last_len, ((h - 1) - i))
+        keys = list(diagonal_dict.keys())
+        keys.sort()
+        for key in keys:
+            row = diagonal_dict[key]
+            for val in row:
+                ans.append(val)
+        return ans
 
-        for i in range(1, last_len):
-            row, col = h - 1, i
-            while row >= 0:
-                if col < len(nums[row]):
-                    result.append(nums[row][col])
-                col += 1
-                row -= 1
-        return result
 
-data_nums = [[1,2,3,4,5],[6,7],[8],[12,13,14,15,16],[9,10,11]]
+data_nums = [[1,2,3,4,5],[6,7],[8],[9,10,11],[12,13,14,15,16]]
 r = Solution().findDiagonalOrder(data_nums)
 print(r)
