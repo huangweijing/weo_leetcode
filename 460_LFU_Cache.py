@@ -1,21 +1,48 @@
+from collections import defaultdict
+
+
 class LinkedNode:
     def __init__(self):
         self.prev: LinkedNode = None
         self.next: LinkedNode = None
-        self.val: int = 0
-        self.key: int = 0
-        self.freq: int = 0
+        self.counter: int = 0
+        self.key_set = set[int]()
 
 class DoubleLinkedList:
     def __init__(self):
         self.head: LinkedNode = None
         self.tail: LinkedNode = None
+        self.key_node_dict = dict[int, LinkedNode]()
         self.length = 0
+
+
+    def append_right(self, node: LinkedNode):
+        self.length += 1
+        node.prev = self.tail
+        if self.tail is not None:
+            self.tail.next = node
+        self.tail = node
+        if self.head is None:
+            self.head = node
+
+    def print_from_head(self):
+        cur = self.head
+        while cur is not None:
+            print(f"({cur.key_set}, {cur.counter}) > ", end="")
+            cur = cur.next
+        print()
+
+    def print_from_tail(self):
+        cur = self.tail
+        while cur is not None:
+            print(f"({cur.key_set}, {cur.counter}) > ", end="")
+            cur = cur.prev
+        print()
 
     # node should be in the list
     def remove(self, node: LinkedNode) -> LinkedNode:
         self.length -= 1
-        if node.prev is None: # head
+        if node.prev is None:  # head
             if node.next is None:
                 self.head = None
                 self.tail = None
@@ -25,7 +52,7 @@ class DoubleLinkedList:
             node.next = None
             node.prev = None
             return node
-        if node.next is None: # tail
+        if node.next is None:  # tail
             if node.prev is None:
                 self.head = None
                 self.tail = None
@@ -43,115 +70,90 @@ class DoubleLinkedList:
         node.prev = None
         return node
 
-    def pop_left(self) -> LinkedNode:
-        return self.remove(self.head)
 
-    def pop_right(self) -> LinkedNode:
-        return self.remove(self.tail)
+    def update(self, key: int):
+        node: LinkedNode = self.key_node[key]
+        # delete current key
+        if len(node.key_set) == 1:
+            self.remove(node)
+        else:
+            node.key_set.remove(key)
+        # update counter
 
-    def append_left(self, node: LinkedNode):
-        self.length += 1
-        node.next = self.head
-        if self.head is not None:
-            self.head.prev = node
-        self.head = node
-        if self.tail is None:
-            self.tail = node
+        if node.next is not None and node.next.counter == node.counter + 1:
+            # just delete current and merge to the next one
+            node.next.key_set.add(key)
+        else:
+            # insert a new node between next one
+            new_node = LinkedNode()
+            new_node.counter = node.counter + 1
+            new_node.key_set.add(key)
 
-    def append_right(self, node: LinkedNode):
-        self.length += 1
-        node.prev = self.tail
-        if self.tail is not None:
-            self.tail.next = node
-        self.tail = node
-        if self.head is None:
-            self.head = node
+            new_node.prev = node.prev
+            new_node.next = node.next
+            if node.next is not None:
+                node.next.prev = new_node
+            else:
+                self.tail = new_node
+            if node.prev is not None:
+                node.prev.next = new_node
+            else:
+                self.head = new_node
 
-    def print_from_head(self):
-        cur = self.head
-        while cur is not None:
-            print(f"({cur.key}, {cur.val}) > ", end="")
-            cur = cur.next
-        print()
-
-    def print_from_tail(self):
-        cur = self.tail
-        while cur is not None:
-            print(f"{cur.val} > ", end="")
-            cur = cur.prev
-        print()
 
     def build_from_list(self, data: list[int]):
-        for num in data:
+        for i, num in enumerate(data):
             node = LinkedNode()
-            node.val = num
+            node.counter = num
+            node.key_set.add(i)
             self.append_right(node)
 
-    def exchange_next(self, cur: LinkedNode):
-        if cur == self.tail: # last element can't be moved
-            return
-        prev_node = cur.prev
-        next_node = cur.next
 
-        if cur == self.head:
-            self.head = next_node
-        if next_node == self.tail: # become the tail after moving
-            self.tail = cur
-
-        cur.next = next_node.next
-        cur.prev = next_node
-        if prev_node is not None:
-            prev_node.next = next_node
-        if next_node.next is not None:
-            next_node.next.prev = cur
-        next_node.prev = prev_node
-        next_node.next = cur
-
-    def freq_up(self, node: LinkedNode):
-        cur = node
-        while cur != self.tail:
-            next_node = cur.next
-            if next_node is not None and cur.freq >= next_node.freq:
-                self.exchange_next(cur)
-            else:
-                break
+dll = DoubleLinkedList()
+dll.build_from_list([1, 2, 2])
+dll.update(2)
+dll.print_from_head()
 
 class LFUCache:
 
     def __init__(self, capacity: int):
         self.capacity = capacity
-        self.cache = dict[int, LinkedNode]()
-        self.lfu_queue = DoubleLinkedList()
+        self.data = dict[int, int]()
+        self.counter_key = defaultdict(lambda : set[int]())
+        self.key_counter = dict[int, int]()
+        self.key_tick = dict[int, int]()
+        self.tick = 0
+        self.min_counter = 1
 
     def get(self, key: int) -> int:
-        if key not in self.cache.keys():
+        if key not in self.data:
             return -1
-        else:
-            self.use_key(key)
-            return self.cache[key].val
+        return self.data[key]
 
     def put(self, key: int, value: int) -> None:
-        if self.capacity == 0:
-            return
-
-        if key in self.cache.keys():
-            self.cache[key].val = value
+        if key in self.data:
             self.use_key(key)
-            return
-        if self.lfu_queue.length + 1 > self.capacity:
-            pop_node = self.lfu_queue.pop_left()
-            del self.cache[pop_node.key]
-        node = LinkedNode()
-        node.key = key
-        node.val = value
-        self.cache[key] = node
-        self.lfu_queue.append_left(node)
-        self.lfu_queue.freq_up(node)
+        else:
+            self.add_key(key)
+        self.data[key] = value
 
-    def use_key(self, key):
-        unit = self.cache[key]
-        unit.freq += 1
-        self.lfu_queue.freq_up(unit)
+
+    def use_key(self, key: int):
+        self.tick += 1
+        self.key_tick[key] = self.tick
+        cnt = self.key_counter[key]
+        self.counter_key[cnt].remove(key)
+        self.counter_key[cnt + 1].add(key)
+        if len(self.counter_key[cnt]) == 0:
+            self.min_counter += 1
+
+    def add_key(self, key: int):
+        self.tick += 1
+        self.key_tick[key] = self.tick
+
+    def remove(self):
+        self.min_counter
+
 
 class Tester:
     def __init__(self, method_list: list[str], para_list: list[list[int]]):

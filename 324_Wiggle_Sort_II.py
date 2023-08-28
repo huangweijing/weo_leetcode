@@ -7,19 +7,19 @@ class Solution:
         """
         nums.sort()
         arr = [0] * len(nums)
-        if len(nums) & 1 == 0:
-            for i in range(len(nums) // 2):
-                arr[i * 2] = nums[i]
-                arr[i * 2 + 1] = nums[len(nums) // 2 + i]
-        else:
-            for i in range(len(nums) // 2):
-                arr[i * 2] = nums[i]
-                arr[i * 2 + 1] = nums[len(nums) // 2 + 1 + i]
-            arr[-1] = nums[len(nums) // 2]
+        i = 0
+        while i * 2 + 1 < len(arr):
+            arr[i * 2 + 1] = nums.pop()
+            i += 1
+        i = 0
+        while i * 2 < len(arr):
+            arr[i * 2] = nums.pop()
+            i += 1
+        # arr[0] = nums.pop()
 
         nums[:] = arr[:]
 
-data = [1, 2, 3, 4, 5]
+data = [4, 5, 5, 6]
 Solution().wiggleSort(data)
 print(data)
 
