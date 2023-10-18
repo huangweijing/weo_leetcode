@@ -45,30 +45,33 @@ class WeoST:
                 return self.get(pos, mid + 1, right, node * 2 + 1) + self.val[node]
 
 
-    def get_max(self, start: int, end: int
-                , left: int = RANGE[0], right: int = RANGE[1], node: int = 1) -> int:
-        # print("get_max", left, right)
-        if start > right or end < left:
-            return -1
+class Solution:
+    def fullBloomFlowers(self, flowers: List[List[int]], people: List[int]) -> List[int]:
+        st = WeoST()
+        for flower in flowers:
+            st.update(flower[0], flower[1], 1)
+            # print(st.val)
+        ans = list(map(st.get, people))
+        return ans
+        # ans = []
+        # for p in people:
 
-        mid = left + right >> 1
-        if start <= left and end >= right:
-            if node * 2 in self.val:
-                m1 = self.get_max(start, end, left, mid, node * 2)
-                m2 = self.get_max(start, end, mid + 1, right, node * 2 + 1)
-                return max(m1, m2) + self.val[node]
-            else:
-                return self.val[node]
-        else:
-            m1 = self.get_max(start, end, left, mid, node * 2)
-            m2 = self.get_max(start, end, mid + 1, right, node * 2 + 1)
-            return max(m1, m2) + self.val[node]
 
-wst = WeoST()
-wst.update(1, 10, 3)
-wst.update(1, 20, 5)
-print(wst.get(8))
+data = [
+    [[1,6],[3,7],[9,12],[4,13]]
+    , [2,3,7,11]
+]
+r = Solution().fullBloomFlowers(*data)
+print(r)
+
+
+
+
+# wst = WeoST()
+# wst.update(1, 10, 3)
+# wst.update(1, 20, 5)
+# print(wst.get(8))
 # print(wst.val)
-wst.update(51, 58, 2)
-print(wst.get(59))
-# print(wst.val)
+# wst.update(51, 58, 2)
+# print(wst.get(59))
+# # print(wst.val)
