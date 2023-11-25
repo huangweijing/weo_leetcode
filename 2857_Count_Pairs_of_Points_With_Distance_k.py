@@ -4,13 +4,14 @@ from collections import Counter
 
 class Solution:
     def countPairs(self, coordinates: List[List[int]], k: int) -> int:
-        cnt = Counter()
         ans = 0
+        cnt = Counter()
         for c in coordinates:
-            print(cnt)
-            print(c, c[0] ^ c[1], c[0] ^ c[1] ^ k)
-            ans += cnt[c[0] ^ c[1] ^ k]
-            cnt[c[0] ^ c[1]] += 1
+            for i in range(k + 1):
+                x, y = i, k - i
+                x2, y2 = c[0] ^ x, c[1] ^ y
+                ans += cnt[(x2, y2)]
+            cnt[(c[0], c[1])] += 1
         return ans
 
 
@@ -19,3 +20,5 @@ data = [
     , 95]
 r = Solution().countPairs(* data)
 print(r)
+
+print(Counter([(1,2), (3, 4)]))
