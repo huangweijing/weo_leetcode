@@ -1,19 +1,16 @@
 class Solution:
     def lengthOfLastWord(self, s: str) -> int:
-        idx = len(s) - 1
-        len_last_word = 0
-        while idx >= 0:
-            if s[idx] == " ":
-                if len_last_word > 0:
-                    return len_last_word
-                idx -= 1
-                continue
-            else:
-                len_last_word += 1
-            idx -= 1
-        return len_last_word
+        s = s.strip()
+        ans = 0
+        for i in reversed(range(len(s))):
+            if s[i] == " ":
+                break
+            ans += 1
+        return ans
+
 
 sol = Solution()
-l = sol.lengthOfLastWord("a")
+l = sol.lengthOfLastWord("a 92134")
 print(l)
+
 
