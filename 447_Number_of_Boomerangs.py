@@ -12,8 +12,8 @@ class Solution:
                     continue
                 distance = ((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2) ** 0.5
                 dist_cnt[distance] += 1
-            for val in dist_cnt:
-                ans += int(val - 1)
+            for val in dist_cnt.values():
+                ans += int(val - 1) * int(val)
         return ans
 
 

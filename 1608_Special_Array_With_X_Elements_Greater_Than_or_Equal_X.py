@@ -3,16 +3,17 @@ from typing import List
 
 class Solution:
     def specialArray(self, nums: List[int]) -> int:
-        nums.sort(reverse=True)
-        val = 0
-        for i, num in enumerate(nums):
-            if val > num and nums[i - 1] <= val == i:
-                return val
-            val += 1
-        if val == len(nums):
-            return val
+        nums.sort()
+        num = 0
+        if num > nums[-1]:
+            return 0
+        for i in range(1, len(nums)):
+            if nums[-i] >= i > nums[-(i + 1)]:
+                return i
+        if len(nums) <= nums[0]:
+            return len(nums)
         return -1
 
-data = [0, 0]
+data = [3,5]
 r = Solution().specialArray(data)
 print(r)
