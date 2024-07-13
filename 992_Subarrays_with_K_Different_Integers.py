@@ -1,31 +1,22 @@
 from typing import List
 from collections import Counter
+import bisect
 
 
 class Solution:
     def subarraysWithKDistinct(self, nums: List[int], k: int) -> int:
-        left, right = 0, 0
-        ans = 0
+        arr = []
         cnt = Counter()
-        while right < len(nums):
-            while len(cnt) < k and right < len(nums):
-                cnt[nums[right]] += 1
-                right += 1
-            left_cnt, right_cnt = 0, 0
-            while len(cnt) == k and right < len(nums):
-                if cnt[nums[right]] + 1 > k:
-                    break
-                cnt[nums[right]] += 1
-                right += 1
-                right_cnt += 1
-            while len(cnt) == k and left < right:
-                if cnt[nums[left]] == 1:
-                    break
-                cnt[nums[left]] -= 1
-                left += 1
-                left_cnt += 1
-            print(left, right, left_cnt, right_cnt)
-            ans += (left_cnt + 1) * (right_cnt + 1)
+        arr_cnt = Counter()
+        for num in nums:
+            cnt[num] += 1
+            arr.append(len(cnt))
+            arr_cnt[len(cnt)] += 1
+        print(arr_cnt)
+        ans = 0
+        for i, val in enumerate(arr):
+            ans += arr_cnt[val + k - 1]
+            print(arr_cnt[val + k - 1])
         return ans
 
 
