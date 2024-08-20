@@ -1,13 +1,11 @@
-import heapq
-from collections import deque
-
 class Solution:
     def orderlyQueue(self, s: str, k: int) -> str:
-        q = deque(s)
-        heap = []
-        for _ in range(k):
-            heap.append(q.popleft())
-        heapq.heapify(heap)
-        while True:
-            ch = heapq.heappop(heap)
-            
+        if k > 1:
+            return "".join(sorted(list(s)))
+        ans = s
+        for i in range(len(s)):
+            ans = min(ans, s[i: ] + s[: i])
+        return ans
+    
+r = Solution().orderlyQueue("cba", 1)
+print(r)
