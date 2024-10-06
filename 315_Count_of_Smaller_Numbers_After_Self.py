@@ -1,16 +1,15 @@
-class TreeNode:
-    def __init__(self):
-        self.left_cnt = 0
-        self.right_cnt = 0
-        self.cnt = 0
-        self.val = 0
-        self.left = None
-        self.right = None
-
-def add_value(root: TreeNode, insert_val: int) -> int:
-    if root.val == insert_val:
-        root.cnt += 1
+from typing import List
+from sortedcontainers import SortedList
+from collections import deque
 
 
 class Solution:
-    def countSmaller(self, nums: list[int]) -> list[int]:
+    def countSmaller(self, nums: List[int]) -> List[int]:
+        sl = SortedList()
+        ans = deque()
+        for num in reversed(nums):
+            idx = sl.bisect_left(num)
+            ans.appendleft(idx)
+            sl.add(num)
+        return list(ans)
+
