@@ -1,0 +1,30 @@
+from typing import List
+from functools import cache
+
+
+class Solution:
+    def __init__(self) -> None:
+        self.v = []
+
+    @cache
+    def my_sol(self, start: int, end: int, last: int) -> int:
+        if start < end:
+            if end - start + 1 == 3:
+                return self.v[start] * self.v[start + 1] * self.v[start + 2]
+            ret = 10e9
+            for i in range(start, end + 1):
+                v1 = i - 1 if i - 1 >= start else end
+                v2 = i + 1 if i + 1 <= end else start
+                val = self.v[v1] * self.v[i] * self.v[v2]
+                if i == last:
+                    ret = min(ret, val + self.my_sol(v2, v1, v1))
+                else:
+                    ret = min(ret, val + self.my_sol(v2, v1, last))
+        else:
+            # if last - start + 1 + 
+            pass
+
+
+    def minScoreTriangulation(self, values: List[int]) -> int:
+        self.values = values
+        return self.my_sol(0, len(values) - 1)
