@@ -1,0 +1,19 @@
+from collections import defaultdict
+
+class Solution:
+    def calculateScore(self, s: str) -> int:
+        pos = defaultdict(lambda: list())
+        ans = 0
+        for i, ch in enumerate(s):
+            mirror = chr(ord('z') - (ord(ch) - ord('a')))
+            if len(pos[mirror]) > 0:
+                j = pos[mirror].pop()
+                ans += i - j
+            else:
+                pos[ch].append(i)
+        return ans
+
+
+data = "eockppxdqclkhjgvnw"
+r = Solution().calculateScore(data)
+print(r)
